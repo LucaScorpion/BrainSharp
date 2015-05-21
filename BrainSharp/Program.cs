@@ -31,11 +31,11 @@ namespace BrainSharp
                             Console.WriteLine("Found argument -f without filename following.");
                         break;
                     // Source to save
-                    case "-s":
+                    case "-c":
                         if (++i < args.Length)
                             codeFile = args[i];
                         else
-                            Console.WriteLine("Found argument -s without filename following.");
+                            Console.WriteLine("Found argument -c without filename following.");
                         break;
                     // Executable to save
                     case "-e":
@@ -118,6 +118,8 @@ namespace BrainSharp
                     }
                 }
             }
+
+            Console.Read();
         }
     }
 }

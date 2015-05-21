@@ -39,25 +39,45 @@ namespace BrainSharp
              * int inputPointer
              * */
 
+            // Stack and pointer changes
+            int sChange = 0;
+            int pChange = 0;
+
+            // Parse all characters
             for (int i = 0; i < bf.Length; i++)
             {
+                // Stack changes
+                if (bf[i] == '+')
+                    sChange++;
+                else if (bf[i] == '-')
+                    sChange--;
+                else if (sChange != 0)
+                {
+                    // Add the instruction
+                    Instruction("stack[pointer] " + (sChange > 0 ? "+" : "-") + "= " + Math.Abs(sChange) + ";");
+                    sChange = 0;
+                }
+
+                // Pointer changes
+                if (bf[i] == '>')
+                    pChange++;
+                else if (bf[i] == '<')
+                    pChange--;
+                else if (pChange != 0)
+                {
+                    // Add the instruction
+                    Instruction("pointer " + (pChange > 0 ? "+" : "-") + "= " + Math.Abs(pChange) + ";");
+                    pChange = 0;
+                }
+
+                // Other characters
                 switch(bf[i])
                 {
-                    // Increase pointer;
-                    case '>':
-                        Instruction("pointer++;");
-                        break;
-                    // Decrease pointer
-                    case '<':
-                        Instruction("pointer--;");
-                        break;
-                    // Increase stack at pointer
+                    // Stack and pointer changes are already handled (see above)
                     case '+':
-                        Instruction("stack[pointer]++;");
-                        break;
-                    // Decrease stack at pointer
                     case '-':
-                        Instruction("stack[pointer]--;");
+                    case '>':
+                    case '<':
                         break;
                     // Start while
                     case '[':
