@@ -38,11 +38,11 @@ namespace BrainSharp
                             Console.WriteLine("Found argument -c without filename following.");
                         break;
                     // Executable to save
-                    case "-e":
+                    case "-x":
                         if (++i < args.Length)
                             exeFile = args[i];
                         else
-                            Console.WriteLine("Found argument -e without filename following.");
+                            Console.WriteLine("Found argument -x without filename following.");
                         break;
                     // Code as argument
                     case "-t":

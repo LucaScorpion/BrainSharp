@@ -8,7 +8,7 @@ BrainSharp is a simple command-line tool that allows you to convert brainfuck co
 |---|---|
 | -f &lt;filename&gt; | Read brainfuck code from file. |
 | -t &lt;code&gt; | Read brainfuck code as argument. When both a file and code are supplied, the code is ignored. |
-| -c &lt;filename&gt; | Save C# code to file |
-| -e &lt;filename&gt; | Save executable to file |
-| -r | Run the program |
-| -o | Overwrite existing files |
+| -c &lt;filename&gt; | Save C# code to file. |
+| -x &lt;filename&gt; | Save executable to file. |
+| -r | Run the program. |
+| -o | Overwrite existing files. |
