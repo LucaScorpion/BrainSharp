@@ -179,7 +179,7 @@ namespace brainfuck
 {
     public class Program
     {
-        private static byte[] stack = new byte[255];
+        private static byte[] stack = new byte[256];
         private static byte pointer = 0;
         private static string input = String.Empty;
         private static int inputPointer = 0;
