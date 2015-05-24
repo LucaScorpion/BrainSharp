@@ -85,7 +85,7 @@ namespace BrainSharp
                     code = File.ReadAllText(open);
 
                 // Parse
-                Parser p = new Parser();
+                Builder p = new Builder();
                 p.Parse(code);
 
                 // Save the code
@@ -93,7 +93,7 @@ namespace BrainSharp
                 {
                     try
                     {
-                        File.WriteAllText(codeFile, p.ToString());
+                        File.WriteAllText(codeFile, p.GetCode());
                         Console.WriteLine("Code saved to: " + codeFile);
                     }
                     catch (IOException e)

@@ -41,7 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parser.cs" />
+    <Compile Include="InstructionMergeException.cs" />
+    <Compile Include="Instructions\Comment.cs" />
+    <Compile Include="Instructions\InputInstruction.cs" />
+    <Compile Include="Instructions\Instruction.cs" />
+    <Compile Include="InstructionList.cs" />
+    <Compile Include="Instructions\LoopEnd.cs" />
+    <Compile Include="Instructions\LoopStart.cs" />
+    <Compile Include="Instructions\PointerInstruction.cs" />
+    <Compile Include="Instructions\PrintInstruction.cs" />
+    <Compile Include="Instructions\StackInstruction.cs" />
+    <Compile Include="Builder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

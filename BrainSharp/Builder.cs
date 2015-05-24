@@ -6,104 +6,63 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BrainSharp.Instructions;
 using Microsoft.CSharp;
 
 namespace BrainSharp
 {
-    public class Parser
+    public class Builder
     {
-        private StringBuilder code = new StringBuilder();
-        private string comment = "";
-        private int tabs = 0;
+        private InstructionList instructions;
+        private string comment = String.Empty;
         private CompilerResults results;
 
-        public Parser()
+        public Builder()
         {
-
-        }
-
-        public override string ToString()
-        {
-            return PreCode + code.ToString() + PostCode;
+            instructions = new InstructionList();
         }
 
         public void Parse(string bf)
         {
-            code.Clear();
-
-            /*
-             * At this point the code already contains the following:
-             * byte[255] stack
-             * byte pointer
-             * string input
-             * int inputPointer
-             * */
-
-            // Stack and pointer changes
-            int sChange = 0;
-            int pChange = 0;
-
             // Parse all characters
             for (int i = 0; i < bf.Length; i++)
             {
-                // Stack changes
-                if (bf[i] == '+')
-                    sChange++;
-                else if (bf[i] == '-')
-                    sChange--;
-                else if (sChange != 0)
+                switch (bf[i])
                 {
-                    // Add the instruction
-                    Instruction("stack[pointer] " + (sChange > 0 ? "+" : "-") + "= " + Math.Abs(sChange) + ";");
-                    sChange = 0;
-                }
-
-                // Pointer changes
-                if (bf[i] == '>')
-                    pChange++;
-                else if (bf[i] == '<')
-                    pChange--;
-                else if (pChange != 0)
-                {
-                    // Add the instruction
-                    Instruction("pointer " + (pChange > 0 ? "+" : "-") + "= " + Math.Abs(pChange) + ";");
-                    pChange = 0;
-                }
-
-                // Other characters
-                switch(bf[i])
-                {
-                    // Stack and pointer changes are already handled (see above)
                     case '+':
+                        instructions.AddInstruction(new StackInstruction(1));
+                        break;
                     case '-':
+                        instructions.AddInstruction(new StackInstruction(-1));
+                        break;
                     case '>':
+                        instructions.AddInstruction(new PointerInstruction(1));
+                        break;
                     case '<':
+                        instructions.AddInstruction(new PointerInstruction(-1));
                         break;
-                    // Start while
                     case '[':
-                        Instruction("while (stack[pointer] != 0)");
-                        Instruction("{");
-                        tabs++;
+                        instructions.AddInstruction(new LoopStart());
                         break;
-                    // End while
                     case ']':
-                        tabs--;
-                        Instruction("}");
+                        instructions.AddInstruction(new LoopEnd());
                         break;
-                    // Set stack at pointer to input
                     case ',':
-                        Instruction("stack[pointer] = (byte)(inputPointer < input.Length ? input[inputPointer++] : 0);");
+                        instructions.AddInstruction(new InputInstruction());
                         break;
-                    // Output
                     case '.':
-                        Instruction("Console.Write((char)stack[pointer]);");
+                        instructions.AddInstruction(new PrintInstruction());
                         break;
-                    // Comment
                     default:
-                        comment += bf[i];
+                        instructions.AddInstruction(new Comment(bf[i].ToString()));
                         break;
                 }
             }
+        }
+
+        public string GetCode()
+        {
+            return instructions.GetCode();
         }
 
         /// <summary>
@@ -118,7 +77,7 @@ namespace BrainSharp
             CompilerParameters parameters = new CompilerParameters(new[] { "System.dll" }, filename);
             parameters.GenerateInMemory = true;
             parameters.GenerateExecutable = true;
-            results = provider.CompileAssemblyFromSource(parameters, ToString());
+            results = provider.CompileAssemblyFromSource(parameters, GetCode());
 
             // Check if there are any errors
             if (results.Errors.Count > 0)
@@ -144,29 +103,6 @@ namespace BrainSharp
                 MethodInfo main = program.GetMethod("Main", BindingFlags.Static | BindingFlags.NonPublic);
                 main.Invoke(null, new object[] { new string[0] });
             }
-        }
-
-        private void Instruction(string i)
-        {
-            // Check if we need add a comment
-            if (comment.Trim() != "")
-            {
-                comment = comment.Trim();
-                AddTabbing();
-                code.Append("/* ").Append(comment).AppendLine(" */");
-                comment = "";
-            }
-
-            // Add the instruction followed by a newline
-            AddTabbing();
-            code.AppendLine(i);
-        }
-
-        private void AddTabbing()
-        {
-            // Add the set amount of tabs
-            for (int t = 0; t < BaseTabs + tabs; t++)
-                code.Append('\t');
         }
 
         #region Code snippets
