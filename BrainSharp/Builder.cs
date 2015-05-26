@@ -25,9 +25,9 @@ namespace BrainSharp
         public void Parse(string bf)
         {
             // Parse all characters
-            for (int i = 0; i < bf.Length; i++)
+            foreach (char c in bf)
             {
-                switch (bf[i])
+                switch (c)
                 {
                     case '+':
                         instructions.AddInstruction(new StackInstruction(1));
@@ -54,7 +54,7 @@ namespace BrainSharp
                         instructions.AddInstruction(new PrintInstruction());
                         break;
                     default:
-                        instructions.AddInstruction(new Comment(bf[i].ToString()));
+                        instructions.AddInstruction(new Comment(c.ToString()));
                         break;
                 }
             }
@@ -82,8 +82,13 @@ namespace BrainSharp
             // Check if there are any errors
             if (results.Errors.Count > 0)
             {
-                foreach (var error in results.Errors)
-                    Console.WriteLine(error);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(results.Errors.Count + " error(s) occurred during compilation:");
+                Console.ResetColor();
+
+                // Print each error
+                foreach (CompilerError error in results.Errors)
+                    Console.WriteLine((error.IsWarning ? "Warning " : "Error ") + error.ErrorNumber + " at (" + error.Line + "," + error.Column + "): " + error.ErrorText);
                 return false;
             }
 
@@ -93,7 +98,7 @@ namespace BrainSharp
         /// <summary>
         /// Run the compiled program.
         /// </summary>
-        public void Run()
+        public void Run(string input)
         {
             // Run the program
             if (results != null && results.Errors.Count == 0)
@@ -101,36 +106,8 @@ namespace BrainSharp
                 Assembly assembly = results.CompiledAssembly;
                 Type program = assembly.GetType("brainfuck.Program");
                 MethodInfo main = program.GetMethod("Main", BindingFlags.Static | BindingFlags.NonPublic);
-                main.Invoke(null, new object[] { new string[0] });
+                main.Invoke(null, new object[] { new[] { input } });
             }
         }
-
-        #region Code snippets
-        private const int BaseTabs = 3;
-
-        private const string PreCode =
-@"using System;
-
-namespace brainfuck
-{
-    public class Program
-    {
-        private static byte[] stack = new byte[256];
-        private static byte pointer = 0;
-        private static string input = String.Empty;
-        private static int inputPointer = 0;
-        
-        private static void Main(string[] args)
-        {
-";
-
-        // Code goes here
-
-        private const string PostCode = 
-@"            Console.Read();
-        }
-    }
-}";
-        #endregion
     }
 }

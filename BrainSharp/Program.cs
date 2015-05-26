@@ -15,6 +15,7 @@ namespace BrainSharp
             string exeFile = null;
             string codeFile = null;
             string code = null;
+            string input = String.Empty;
             bool overwrite = false;
             bool run = false;
 
@@ -59,6 +60,12 @@ namespace BrainSharp
                     case "-r":
                         run = true;
                         break;
+                    case "-i":
+                        if (++i < args.Length)
+                            input = args[i];
+                        else
+                            Console.WriteLine("Found argument -i without input following.");
+                        break;
                     default:
                         Console.WriteLine("Unknown argument: " + args[i]);
                         break;
@@ -66,6 +73,7 @@ namespace BrainSharp
             }
 
             // Check all sorts of things that could go wrong
+            Console.ForegroundColor = ConsoleColor.Red;
             if (codeFile != null && File.Exists(codeFile) && !overwrite)
                 Console.WriteLine("File to save code to already exists: " + codeFile + ". Use -o for overwrite.");
             // Check all sorts of things that could go wrong
@@ -80,33 +88,39 @@ namespace BrainSharp
             // All is good
             else
             {
+                Console.ResetColor();
+
                 // Read the code from the file
                 if (open != null)
                     code = File.ReadAllText(open);
 
                 // Parse
-                Builder p = new Builder();
-                p.Parse(code);
+                Builder builder = new Builder();
+                builder.Parse(code);
 
                 // Save the code
                 if (codeFile != null)
                 {
                     try
                     {
-                        File.WriteAllText(codeFile, p.GetCode());
+                        File.WriteAllText(codeFile, builder.GetCode());
                         Console.WriteLine("Code saved to: " + codeFile);
                     }
                     catch (IOException e)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("An exception occured while trying to save the code.\n" + e.Message);
+                        Console.ResetColor();
                     }
                 }
 
                 if (exeFile != null || run)
                 {
                     // Compile and save the exe
-                    bool success = p.Compile(exeFile);
+                    bool success = builder.Compile(exeFile);
+                    Console.ForegroundColor = success ? ConsoleColor.Green : ConsoleColor.Red;
                     Console.WriteLine("Compilation " + (!success ? "not " : "") + "successful.");
+                    Console.ResetColor();
                     if (exeFile != null)
                         Console.WriteLine("Executable saved to: " + exeFile);
 
@@ -114,7 +128,7 @@ namespace BrainSharp
                     if (success && run)
                     {
                         Console.WriteLine("Running compiled program:");
-                        p.Run();
+                        builder.Run(input);
                     }
                 }
             }

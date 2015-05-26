@@ -20,7 +20,7 @@ namespace BrainSharp.Instructions
 
         public override string GetCode()
         {
-            return "while (stack[pointer] != 0) {";
+            return "while (stack[pointer] != 0)\n{";
         }
 
         public override int DeltaTabs

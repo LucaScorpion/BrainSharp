@@ -30,15 +30,27 @@ namespace BrainSharp
 
             // Build the code
             StringBuilder code = new StringBuilder(PreCode);
-            for (int i = 0; i < instructions.Count; i++)
+            foreach (Instruction i in instructions)
             {
-                string c = instructions[i].GetCode();
+                string c = i.GetCode();
                 if (c != null)
                 {
-                    for (int t = 0; t < tabs; t++)
-                        code.Append('\t');
-                    code.AppendLine(c);
-                    tabs += instructions[i].DeltaTabs;
+                    // Change tabbing
+                    if (i.DeltaTabs < 0)
+                        tabs += i.DeltaTabs;
+
+                    // Add all lines from the instruction
+                    string[] lines = c.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    foreach (string line in lines)
+                    {
+                        for (int t = 0; t < tabs; t++)
+                            code.Append('\t');
+                        code.AppendLine(line);
+                    }
+
+                    // Change tabbing
+                    if (i.DeltaTabs > 0)
+                        tabs += i.DeltaTabs;
                 }
             }
             code.Append(PostCode);
@@ -88,12 +100,20 @@ namespace brainfuck
         
         private static void Main(string[] args)
         {
+            for (int i = 0; i < args.Length; i++)
+            {
+                input += args[i];
+                if (i < args.Length - 1)
+                    input += "" "";
+            }
+            
 ";
 
         // Code goes here
 
         private const string PostCode =
-@"            Console.Read();
+@"            
+            Console.Read();
         }
     }
 }";
