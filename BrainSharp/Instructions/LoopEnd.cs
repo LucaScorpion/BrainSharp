@@ -13,6 +13,11 @@ namespace BrainSharp.Instructions
 
         }
 
+        public override string ToString()
+        {
+            return "Loop end";
+        }
+
         public override string GetCode()
         {
             return "}";

@@ -15,6 +15,11 @@ namespace BrainSharp.Instructions
             this.change = change;
         }
 
+        public override string ToString()
+        {
+            return "Add " + change + " to current stack position";
+        }
+
         public override string GetCode()
         {
             return "stack[pointer] " + (change > 0 ? "+" : "-") + "= " + Math.Abs(change) + ";";
@@ -27,6 +32,11 @@ namespace BrainSharp.Instructions
 
             StackInstruction result = new StackInstruction(change + (other as StackInstruction).change);
             return result.change != 0 ? result : null;
+        }
+
+        public override bool CanMerge
+        {
+            get { return true; }
         }
     }
 }

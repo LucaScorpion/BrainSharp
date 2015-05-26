@@ -15,6 +15,11 @@ namespace BrainSharp.Instructions
             this.change = change;
         }
 
+        public override string ToString()
+        {
+            return "Add " + change + " to the pointer";
+        }
+
         public override string GetCode()
         {
             return "pointer " + (change > 0 ? "+" : "-") + "= " + Math.Abs(change) + ";";

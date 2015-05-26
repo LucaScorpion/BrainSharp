@@ -13,6 +13,11 @@ namespace BrainSharp.Instructions
 
         }
 
+        public override string ToString()
+        {
+            return "Print instruction";
+        }
+
         public override string GetCode()
         {
             return "Console.Write((char)stack[pointer]);";

@@ -13,6 +13,11 @@ namespace BrainSharp.Instructions
 
         }
 
+        public override string ToString()
+        {
+            return "Input instruction";
+        }
+
         public override string GetCode()
         {
             return "stack[pointer] = (byte)(inputPointer < input.Length ? input[inputPointer++] : 0);";

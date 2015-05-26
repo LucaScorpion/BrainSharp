@@ -13,6 +13,11 @@ namespace BrainSharp.Instructions
 
         }
 
+        public override string ToString()
+        {
+            return "Loop start";
+        }
+
         public override string GetCode()
         {
             return "while (stack[pointer] != 0) {";

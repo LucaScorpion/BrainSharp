@@ -15,6 +15,11 @@ namespace BrainSharp.Instructions
             this.comment = comment;
         }
 
+        public override string ToString()
+        {
+            return GetCode() != null ? GetCode() : "Empty comment";
+        }
+
         public override string GetCode()
         {
             return !String.IsNullOrWhiteSpace(comment) ? "/* " + comment.Trim() + " */" : null;
