@@ -14,52 +14,53 @@ namespace BrainSharp
     public class Builder
     {
         private InstructionList instructions;
-        private string comment = String.Empty;
         private CompilerResults results;
+
+        // Brainfuck characters and their respective instructions.
+        private Dictionary<char, Instruction> instructionSet = new Dictionary<char, Instruction>()
+        {
+            { '+', new StackInstruction(1) },
+            { '-', new StackInstruction(-1) },
+            { '>', new PointerInstruction(1) },
+            { '<', new PointerInstruction(-1) },
+            { '[', new LoopStart() },
+            { ']', new LoopEnd() },
+            { ',', new InputInstruction() },
+            { '.', new PrintInstruction() }
+        };
 
         public Builder()
         {
             instructions = new InstructionList();
         }
 
+        /// <summary>
+        /// Parse a brainfuck string.
+        /// </summary>
+        /// <param name="bf">The string containing brainfuck code.</param>
         public void Parse(string bf)
         {
-            // Parse all characters
+            Console.Write("Parsing brainfuck code... ");
+
             foreach (char c in bf)
             {
-                switch (c)
-                {
-                    case '+':
-                        instructions.AddInstruction(new StackInstruction(1));
-                        break;
-                    case '-':
-                        instructions.AddInstruction(new StackInstruction(-1));
-                        break;
-                    case '>':
-                        instructions.AddInstruction(new PointerInstruction(1));
-                        break;
-                    case '<':
-                        instructions.AddInstruction(new PointerInstruction(-1));
-                        break;
-                    case '[':
-                        instructions.AddInstruction(new LoopStart());
-                        break;
-                    case ']':
-                        instructions.AddInstruction(new LoopEnd());
-                        break;
-                    case ',':
-                        instructions.AddInstruction(new InputInstruction());
-                        break;
-                    case '.':
-                        instructions.AddInstruction(new PrintInstruction());
-                        break;
-                    default:
-                        instructions.AddInstruction(new Comment(c.ToString()));
-                        break;
-                }
+                // Get the instruction from the dict, or a comment.
+                Instruction next;
+                if (!instructionSet.TryGetValue(c, out next))
+                    next = new Comment(c);
+
+                instructions.AddInstruction(next);
             }
+
+            Console.WriteLine("Done.");
+
+            instructions.MergeInstructions();
         }
 
+        /// <summary>
+        /// Get the generated C# code.
+        /// </summary>
+        /// <returns>The generated code.</returns>
         public string GetCode()
         {
             return instructions.GetCode();

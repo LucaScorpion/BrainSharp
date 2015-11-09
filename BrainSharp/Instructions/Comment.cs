@@ -14,6 +14,10 @@ namespace BrainSharp.Instructions
         {
             this.comment = comment;
         }
+        public Comment(char c)
+            : this(c.ToString())
+        {
+        }
 
         public override string ToString()
         {

@@ -9,12 +9,7 @@ namespace BrainSharp
 {
     public class InstructionList
     {
-        private List<Instruction> instructions;
-
-        public InstructionList()
-        {
-            instructions = new List<Instruction>();
-        }
+        private List<Instruction> instructions = new List<Instruction>();
 
         public void AddInstruction(Instruction i)
         {
@@ -23,23 +18,20 @@ namespace BrainSharp
 
         public string GetCode()
         {
-            // Clean up the instruction list
-            MergeInstructions();
-
             int tabs = BaseTabs;
 
-            // Build the code
+            // Build the code.
             StringBuilder code = new StringBuilder(PreCode);
             foreach (Instruction i in instructions)
             {
                 string c = i.GetCode();
                 if (c != null)
                 {
-                    // Change tabbing
+                    // Change tabbing.
                     if (i.DeltaTabs < 0)
                         tabs += i.DeltaTabs;
 
-                    // Add all lines from the instruction
+                    // Add all lines from the instruction.
                     string[] lines = c.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
                     foreach (string line in lines)
                     {
@@ -48,7 +40,7 @@ namespace BrainSharp
                         code.AppendLine(line);
                     }
 
-                    // Change tabbing
+                    // Change tabbing.
                     if (i.DeltaTabs > 0)
                         tabs += i.DeltaTabs;
                 }
@@ -58,20 +50,20 @@ namespace BrainSharp
             return code.ToString();
         }
 
-        private void MergeInstructions()
+        public void MergeInstructions()
         {
             for (int i = 0; i < instructions.Count - 1; i++)
             {
-                // Get the instructions
+                // Get the instructions.
                 Instruction current = instructions[i];
                 Instruction next = instructions[i + 1];
 
-                // Merge the current and next instruction
+                // Merge the current and next instruction.
                 if (current.CanMerge && current.GetType() == next.GetType())
                 {
                     Instruction merged = current.Merge(next);
 
-                    // Insert the new instruction, remove the old ones
+                    // Insert the new instruction, remove the old ones.
                     if (merged != null)
                         instructions.Insert(i++, merged);
                     instructions.RemoveAt(i);
@@ -107,13 +99,26 @@ namespace brainfuck
                     input += "" "";
             }
             
+            /* Start of generated code. */
+            
 ";
 
-        // Code goes here
+        // Code goes here.
 
         private const string PostCode =
 @"            
+            /* End of generated code. */
+            
             Console.Read();
+        }
+        
+        private static byte ReadByte()
+        {
+            return (byte)(inputPointer < input.Length ? input[inputPointer++] : 0);
+        }
+        private static void PrintChar()
+        {
+            Console.Write((char)stack[pointer]);
         }
     }
 }";

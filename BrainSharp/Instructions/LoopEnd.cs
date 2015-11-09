@@ -8,11 +8,6 @@ namespace BrainSharp.Instructions
 {
     public class LoopEnd : Instruction
     {
-        public LoopEnd()
-        {
-
-        }
-
         public override string ToString()
         {
             return "Loop end";
