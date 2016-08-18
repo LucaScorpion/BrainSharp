@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using BrainSharp.Instructions;
 
 namespace BrainSharp
@@ -16,12 +14,16 @@ namespace BrainSharp
             instructions.Add(i);
         }
 
+        /// <summary>
+        /// Generate the code from the instruction list.
+        /// </summary>
+        /// <returns>The complete program code.</returns>
         public string GetCode()
         {
-            int tabs = BaseTabs;
+            int tabs = baseTabs;
 
             // Build the code.
-            StringBuilder code = new StringBuilder(PreCode);
+            StringBuilder code = new StringBuilder(preCode);
             foreach (Instruction i in instructions)
             {
                 string c = i.GetCode();
@@ -45,11 +47,14 @@ namespace BrainSharp
                         tabs += i.DeltaTabs;
                 }
             }
-            code.Append(PostCode);
+            code.Append(postCode);
 
             return code.ToString();
         }
 
+        /// <summary>
+        /// Merge the instructions where possible.
+        /// </summary>
         public void MergeInstructions()
         {
             for (int i = 0; i < instructions.Count - 1; i++)
@@ -76,9 +81,9 @@ namespace BrainSharp
         }
 
         #region Code snippets
-        private const int BaseTabs = 3;
+        private const int baseTabs = 3;
 
-        private const string PreCode =
+        private const string preCode =
 @"using System;
 
 namespace brainfuck
@@ -105,7 +110,7 @@ namespace brainfuck
 
         // Code goes here.
 
-        private const string PostCode =
+        private const string postCode =
 @"            
             /* End of generated code. */
             

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using BrainSharp.Instructions;
 using Microsoft.CSharp;
 
@@ -52,9 +48,9 @@ namespace BrainSharp
                 instructions.AddInstruction(next);
             }
 
-            Console.WriteLine("Done.");
-
             instructions.MergeInstructions();
+
+            Console.WriteLine("Done.");
         }
 
         /// <summary>
@@ -83,9 +79,7 @@ namespace BrainSharp
             // Check if there are any errors
             if (results.Errors.Count > 0)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(results.Errors.Count + " error(s) occurred during compilation:");
-                Console.ResetColor();
+                Util.WriteLine(results.Errors.Count + " error(s) occurred during compilation:", ConsoleColor.Red);
 
                 // Print each error
                 foreach (CompilerError error in results.Errors)
@@ -99,6 +93,7 @@ namespace BrainSharp
         /// <summary>
         /// Run the compiled program.
         /// </summary>
+        /// <param name="input">The input to use as the program's argument.</param>
         public void Run(string input)
         {
             // Run the program

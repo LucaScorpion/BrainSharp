@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BrainSharp
 {
     public class Program
     {
+        private static string open = null;
+        private static string exeFile = null;
+        private static string codeFile = null;
+        private static string code = null;
+        private static string input = String.Empty;
+        private static bool overwrite = false;
+        private static bool run = false;
+
         private static void Main(string[] args)
         {
-            string open = null;
-            string exeFile = null;
-            string codeFile = null;
-            string code = null;
-            string input = String.Empty;
-            bool overwrite = false;
-            bool run = false;
-
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             // Parse all arguments.
@@ -28,31 +24,19 @@ namespace BrainSharp
                 {
                     // File to open.
                     case "-f":
-                        if (++i < args.Length)
-                            open = args[i];
-                        else
-                            Console.WriteLine("Found argument -f without filename following.");
+                        open = Util.GetArgumentValue(args, ++i, "-f", "filename");
                         break;
                     // Source to save.
                     case "-c":
-                        if (++i < args.Length)
-                            codeFile = args[i];
-                        else
-                            Console.WriteLine("Found argument -c without filename following.");
+                        codeFile = Util.GetArgumentValue(args, ++i, "-c", "filename");
                         break;
                     // Executable to save.
                     case "-x":
-                        if (++i < args.Length)
-                            exeFile = args[i];
-                        else
-                            Console.WriteLine("Found argument -x without filename following.");
+                        exeFile = Util.GetArgumentValue(args, ++i, "-x", "filename");
                         break;
                     // Code as argument.
                     case "-t":
-                        if (++i < args.Length)
-                            code = args[i];
-                        else
-                            Console.WriteLine("Found argument -t without code following.");
+                        code = Util.GetArgumentValue(args, ++i, "-t", "code");
                         break;
                     // Overwrite existing.
                     case "-o":
@@ -63,10 +47,7 @@ namespace BrainSharp
                         run = true;
                         break;
                     case "-i":
-                        if (++i < args.Length)
-                            input = args[i];
-                        else
-                            Console.WriteLine("Found argument -i without input following.");
+                        input = Util.GetArgumentValue(args, ++i, "-i", "input");
                         break;
                     default:
                         Console.WriteLine("Unknown argument: " + args[i]);
@@ -89,52 +70,56 @@ namespace BrainSharp
             // All is good.
             else
             {
+                // Do the actual code processing etc.
                 Console.ResetColor();
+                Process();
+            }
 
-                // Read the code from the file.
-                if (open != null)
-                    code = File.ReadAllText(open);
+            Console.ReadLine();
+        }
 
-                // Parse.
-                Builder builder = new Builder();
-                builder.Parse(code);
+        private static void Process()
+        {
+            // Read the code from the file.
+            if (open != null)
+                code = File.ReadAllText(open);
 
-                // Save the code.
-                if (codeFile != null)
+            // Parse.
+            Builder builder = new Builder();
+            builder.Parse(code);
+
+            // Save the code.
+            if (codeFile != null)
+            {
+                try
                 {
-                    try
-                    {
-                        File.WriteAllText(codeFile, builder.GetCode());
-                        Console.WriteLine("Code saved to: " + codeFile);
-                    }
-                    catch (IOException e)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("An exception occured while trying to save the code.\n" + e.Message);
-                        Console.ResetColor();
-                    }
+                    File.WriteAllText(codeFile, builder.GetCode());
+                    Console.WriteLine("Code saved to: " + codeFile);
                 }
-
-                if (exeFile != null || run)
+                catch (IOException e)
                 {
-                    // Compile and save the exe.
-                    bool success = builder.Compile(exeFile);
-                    Console.ForegroundColor = success ? ConsoleColor.Green : ConsoleColor.Red;
-                    Console.WriteLine("Compilation " + (!success ? "not " : "") + "successful.");
-                    Console.ResetColor();
-                    if (exeFile != null)
-                        Console.WriteLine("Executable saved to: " + exeFile);
-
-                    // Run the program.
-                    if (success && run)
-                    {
-                        Console.WriteLine("Running compiled program" + (input == String.Empty ? "" : " with input \"" + input + "\"") + ":");
-                        builder.Run(input);
-                    }
+                    Util.WriteLine("An exception occured while trying to save the code.\n" + e.Message, ConsoleColor.Red);
                 }
             }
 
-            Console.Read();
+            // Check if we have to compile the code.
+            if (exeFile != null || run)
+            {
+                // Compile.
+                bool success = builder.Compile(exeFile);
+                Util.WriteLine("Compilation " + (!success ? "not " : "") + "successful.", success ? ConsoleColor.Green : ConsoleColor.Red);
+
+                // Save the exe file.
+                if (exeFile != null)
+                    Console.WriteLine("Executable saved to: " + exeFile);
+
+                // Run the program.
+                if (success && run)
+                {
+                    Console.WriteLine("Running compiled program" + (input == String.Empty ? "" : " with input \"" + input + "\"") + ":");
+                    builder.Run(input);
+                }
+            }
         }
     }
 }
