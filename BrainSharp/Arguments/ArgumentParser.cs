@@ -74,6 +74,34 @@ namespace BrainSharp.Arguments
 			success = false;
 		}
 
+		public void PrintHelp()
+		{
+			// Options.
+			List<string> options = new List<string>(arguments.Count);
+			arguments.ForEach(arg => options.Add($"{arg.Option}, {arg.LongOption}"));
+			PadStrings(options);
+
+			// Argument values.
+			List<string> values = new List<string>(arguments.Count);
+			arguments.ForEach(arg => values.Add(arg is ValueArgument ? $"<{(arg as ValueArgument).ValueName}>" : String.Empty));
+			PadStrings(values);
+
+			// Descriptions.
+			List<string> descriptions = new List<string>(arguments.Count);
+			arguments.ForEach(arg => descriptions.Add(arg.Description));
+
+			// Print everything.
+			for (int i = 0; i < arguments.Count; i++)
+				Console.WriteLine($"{options[i]} {values[i]} {descriptions[i]}");
+		}
+
+		private void PadStrings(List<string> strings)
+		{
+			int maxLength = strings.Max(s => s.Length);
+			for (int i = 0; i < strings.Count; i++)
+				strings[i] += new string(' ', maxLength - strings[i].Length);
+		}
+
 		public bool Success => success;
 
 		public bool IsEnabled(string argName) => arguments.Find(arg => arg.Name == argName).Enabled;

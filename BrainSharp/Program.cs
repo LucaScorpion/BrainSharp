@@ -12,16 +12,20 @@ namespace BrainSharp
 		{
 			parser = new ArgumentParser(args,
 				new FlagArgument("help", "h", "help", "Display the help."),
-				new ValueArgument("file", "f", "file", "The file to read brainfuck code from. Cannot be used in combination with -c.", "path"),
-				new ValueArgument("code", "c", "code", "The brainfuck code to use. Cannot be used in combination with -f.", "brainfuck"),
+				new ValueArgument("file", "f", "file", "Read brainfuck code from <file>. Cannot be used in combination with -c.", "path"),
+				new ValueArgument("code", "c", "code", "The brainfuck code to use. Cannot be used in combination with -f.", "code"),
 				new FlagArgument("run", "r", "run", "Run the brainfuck code."),
-				new ValueArgument("input", "i", "input", "The input to use when running the program.", "input"),
-				new ValueArgument("save", "s", "save", "The file to save the generated C# code to.", "path"),
-				new ValueArgument("exe", "x", "executable", "The file to save the generated executable to.", "path"),
+				new ValueArgument("input", "i", "input", "Use input when running the program.", "input"),
+				new ValueArgument("save", "s", "save", "Save the generated C# code to <path>.", "path"),
+				new ValueArgument("exe", "x", "executable", "Save the generated executable to <path>.", "path"),
 				new FlagArgument("overwrite", "o", "overwrite", "Overwrite any existing files.")
 			);
 
-			bool success = parser.Success;
+			bool success = parser.Success && !parser.IsEnabled("help");
+
+			// Check if the help should be printed.
+			if (!success)
+				parser.PrintHelp();
 
 			// Check for conflicts between the given arguments.
 			if (parser.IsEnabled("file") && parser.IsEnabled("code"))

@@ -18,6 +18,8 @@ namespace BrainSharp.Arguments
 
 		public override string ToString() => $"{base.ToString()} <{valueName}>";
 
+		public string ValueName => valueName;
+
 		public string Value
 		{
 			get;
