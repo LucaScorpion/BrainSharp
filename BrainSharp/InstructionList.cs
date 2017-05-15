@@ -64,9 +64,9 @@ namespace BrainSharp
                 Instruction next = instructions[i + 1];
 
                 // Merge the current and next instruction.
-                if (current.CanMerge && current.GetType() == next.GetType())
+                if (current is IMergeable<Instruction> && current.GetType() == next.GetType())
                 {
-                    Instruction merged = current.Merge(next);
+                    Instruction merged = (current as IMergeable<Instruction>).Merge(next);
 
                     // Insert the new instruction, remove the old ones.
                     if (merged != null)

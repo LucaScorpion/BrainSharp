@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrainSharp.Instructions
 {
-    public class Comment : Instruction
+    public class Comment : Instruction, IMergeable<Comment>
     {
         private string comment;
 
@@ -19,27 +19,10 @@ namespace BrainSharp.Instructions
         {
         }
 
-        public override string ToString()
-        {
-            return GetCode() != null ? GetCode() : "Empty comment";
-        }
+        public override string ToString() => GetCode() != null ? GetCode() : "[empty comment]";
 
-        public override string GetCode()
-        {
-            return !String.IsNullOrWhiteSpace(comment) ? "/* " + comment.Trim() + " */" : null;
-        }
+        public override string GetCode() => !String.IsNullOrWhiteSpace(comment) ? "/* " + comment.Trim() + " */" : null;
 
-        public override Instruction Merge(Instruction other)
-        {
-            if (!(other is Comment))
-                throw new InstructionMergeException(this, other);
-
-            return new Comment(comment + (other as Comment).comment);
-        }
-
-        public override bool CanMerge
-        {
-            get { return true; }
-        }
+        public Comment Merge(Comment other) => new Comment(comment + (other as Comment).comment);
     }
 }

@@ -45,8 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstructionMergeException.cs" />
     <Compile Include="Instructions\Comment.cs" />
+    <Compile Include="Instructions\IMergeable.cs" />
     <Compile Include="Instructions\InputInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="InstructionList.cs" />

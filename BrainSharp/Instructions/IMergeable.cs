@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace BrainSharp.Instructions
 {
-    public abstract class Instruction
+    public interface IMergeable<T> where T : Instruction
     {
-        public abstract string GetCode();
-
-        public virtual int DeltaTabs
-        {
-            get { return 0; }
-        }
+		T Merge(T other);
     }
 }
