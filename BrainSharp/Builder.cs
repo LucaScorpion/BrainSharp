@@ -36,8 +36,6 @@ namespace BrainSharp
         /// <param name="bf">The string containing brainfuck code.</param>
         public void Parse(string bf)
         {
-            Console.Write("Parsing brainfuck code... ");
-
             foreach (char c in bf)
             {
                 // Get the instruction from the dict, or a comment.
@@ -49,8 +47,6 @@ namespace BrainSharp
             }
 
             instructions.MergeInstructions();
-
-            Console.WriteLine("Done.");
         }
 
         /// <summary>

@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arguments\FlagArgument.cs" />
+    <Compile Include="Arguments\ArgumentParser.cs" />
+    <Compile Include="Arguments\ValueArgument.cs" />
     <Compile Include="Instructions\Comment.cs" />
     <Compile Include="Instructions\IMergeable.cs" />
     <Compile Include="Instructions\InputInstruction.cs" />
