@@ -9,10 +9,7 @@ namespace BrainSharp
     {
         private List<Instruction> instructions = new List<Instruction>();
 
-        public void AddInstruction(Instruction i)
-        {
-            instructions.Add(i);
-        }
+        public void AddInstruction(Instruction i) => instructions.Add(i);
 
         /// <summary>
         /// Generate the code from the instruction list.
@@ -64,9 +61,9 @@ namespace BrainSharp
                 Instruction next = instructions[i + 1];
 
                 // Merge the current and next instruction.
-                if (current is IMergeable<Instruction> && current.GetType() == next.GetType())
+                if (current is IMergeable && current.GetType() == next.GetType())
                 {
-                    Instruction merged = (current as IMergeable<Instruction>).Merge(next);
+                    Instruction merged = (current as IMergeable).Merge(next);
 
                     // Insert the new instruction, remove the old ones.
                     if (merged != null)

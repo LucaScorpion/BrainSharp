@@ -41,7 +41,7 @@ namespace BrainSharp
                 // Get the instruction from the dict, or a comment.
                 Instruction next;
                 if (!instructionSet.TryGetValue(c, out next))
-                    next = new Comment(c);
+                    next = new Comment(c.ToString());
 
                 instructions.AddInstruction(next);
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrainSharp.Instructions
 {
-    public class PointerInstruction : Instruction, IMergeable<PointerInstruction>
+    public class PointerInstruction : Instruction, IMergeable
     {
         private int change;
 
@@ -19,7 +19,7 @@ namespace BrainSharp.Instructions
 
         public override string GetCode() => "pointer " + (change > 0 ? "+" : "-") + "= " + Math.Abs(change) + ";";
 
-        public PointerInstruction Merge(PointerInstruction other)
+        public Instruction Merge(Instruction other)
         {
             PointerInstruction result = new PointerInstruction(change + (other as PointerInstruction).change);
             return result.change != 0 ? result : null;

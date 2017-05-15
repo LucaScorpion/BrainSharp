@@ -8,14 +8,8 @@ namespace BrainSharp.Instructions
 {
     public class InputInstruction : Instruction
     {
-        public override string ToString()
-        {
-            return "Input instruction";
-        }
+        public override string ToString() => "Input instruction";
 
-        public override string GetCode()
-        {
-            return "stack[pointer] = ReadByte();";
-        }
+        public override string GetCode() => "stack[pointer] = ReadByte();";
     }
 }

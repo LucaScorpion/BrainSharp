@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrainSharp.Instructions
 {
-    public class StackInstruction : Instruction, IMergeable<StackInstruction>
+    public class StackInstruction : Instruction, IMergeable
     {
         private int change;
 
@@ -19,7 +19,7 @@ namespace BrainSharp.Instructions
 
         public override string GetCode() => "stack[pointer] " + (change > 0 ? "+" : "-") + "= " + Math.Abs(change) + ";";
 
-        public StackInstruction Merge(StackInstruction other)
+        public Instruction Merge(Instruction other)
         {
             StackInstruction result = new StackInstruction(change + (other as StackInstruction).change);
             return result.change != 0 ? result : null;

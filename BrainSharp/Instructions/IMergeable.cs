@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BrainSharp.Instructions
 {
-    public interface IMergeable<T> where T : Instruction
+    public interface IMergeable
     {
-		T Merge(T other);
+		Instruction Merge(Instruction other);
     }
 }

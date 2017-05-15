@@ -8,14 +8,8 @@ namespace BrainSharp.Instructions
 {
     public class PrintInstruction : Instruction
     {
-        public override string ToString()
-        {
-            return "Print instruction";
-        }
+        public override string ToString() => "Print instruction";
 
-        public override string GetCode()
-        {
-            return "PrintChar();";
-        }
+        public override string GetCode() => "PrintChar();";
     }
 }

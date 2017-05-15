@@ -10,9 +10,6 @@ namespace BrainSharp.Instructions
     {
         public abstract string GetCode();
 
-        public virtual int DeltaTabs
-        {
-            get { return 0; }
-        }
+		public virtual int DeltaTabs => 0;
     }
 }
