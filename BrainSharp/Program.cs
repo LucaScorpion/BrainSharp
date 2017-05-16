@@ -70,47 +70,54 @@ namespace BrainSharp
 
 			// Save the code.
 			if (parser.IsEnabled("save"))
-            {
-				string codeFile = parser.GetValue("save");
+				SaveCode(builder.GetCode());
 
-				if (File.Exists(codeFile) && !parser.IsEnabled("overwrite"))
-					Util.WriteLine($"File {codeFile} already exists. Use the -o argument to allow overwriting.", ConsoleColor.Yellow);
-				else
-				{
-					// Save the generated C# code to the file.
-					try
-					{
-						File.WriteAllText(codeFile, builder.GetCode());
-						Console.WriteLine("Code saved to: " + codeFile);
-					}
-					catch (IOException e)
-					{
-						Util.WriteLine("An exception occured while trying to save the code.\n" + e.Message, ConsoleColor.Red);
-					}
-				}
-            }
-
-            // Check if we have to compile the code.
-            if (parser.IsEnabled("exe") || parser.IsEnabled("run"))
-            {
-				string exeFile = parser.IsEnabled("exe") ? parser.GetValue("exe") : null;
-
-				// Compile.
-				bool success = builder.Compile(exeFile);
-                Util.WriteLine("Compilation " + (!success ? "not " : "") + "successful.", success ? ConsoleColor.Green : ConsoleColor.Red);
-
-                // Save the exe file.
-                if (exeFile != null)
-                    Console.WriteLine("Executable saved to: " + exeFile);
-
-                // Run the program.
-                if (success && parser.IsEnabled("run"))
+			// Check if we have to compile or run the code.
+			bool run = parser.IsEnabled("run");
+            if ((parser.IsEnabled("exe") || run) && Compile(builder))
+                if (run)
                 {
 					string input = parser.GetValue("input");
                     Console.WriteLine("Running compiled program" + (String.IsNullOrEmpty(input) ? "" : " with input \"" + input + "\"") + ":");
                     builder.Run(input);
                 }
-            }
         }
+
+		private static void SaveCode(string code)
+		{
+			string codeFile = parser.GetValue("save");
+
+			// Check if the file exists and overwrite is disabled.
+			if (File.Exists(codeFile) && !parser.IsEnabled("overwrite"))
+			{
+				Util.WriteLine($"File {codeFile} already exists. Use the -o argument to allow overwriting.", ConsoleColor.Yellow);
+				return;
+			}
+
+			// Save the generated C# code to the file.
+			try
+			{
+				File.WriteAllText(codeFile, code);
+				Console.WriteLine("Code saved to: " + codeFile);
+			}
+			catch (IOException e)
+			{
+				Util.WriteLine("An exception occured while trying to save the code:\n" + e.Message, ConsoleColor.Red);
+			}
+		}
+
+		private static bool Compile(Builder builder)
+		{
+			string exeFile = parser.IsEnabled("exe") ? parser.GetValue("exe") : null;
+
+			// Compile.
+			bool success = builder.Compile(exeFile);
+			Util.WriteLine("Compilation " + (!success ? "not " : "") + "successful.", success ? ConsoleColor.Green : ConsoleColor.Red);
+			
+			if (exeFile != null)
+				Console.WriteLine("Executable saved to: " + exeFile);
+
+			return success;
+		}
     }
 }
