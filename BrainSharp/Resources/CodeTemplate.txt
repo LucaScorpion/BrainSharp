@@ -1,0 +1,40 @@
+using System;
+
+namespace brainfuck
+{
+	public class Program
+	{
+		private static byte[] stack = new byte[256];
+		private static byte pointer = 0;
+		private static string input = String.Empty;
+		private static int inputPointer = 0;
+		
+		private static void Main(string[] args)
+		{
+			for (int i = 0; i < args.Length; i++)
+			{
+				input += args[i];
+				if (i < args.Length - 1)
+					input += ' ';
+			}
+			
+			/* Start of generated code. */
+
+${code}
+
+			/* End of generated code. */
+			
+			Console.Read();
+		}
+		
+		private static byte ReadByte()
+		{
+			return (byte)(inputPointer < input.Length ? input[inputPointer++] : 0);
+		}
+
+		private static void PrintChar()
+		{
+			Console.Write((char)stack[pointer]);
+		}
+	}
+}

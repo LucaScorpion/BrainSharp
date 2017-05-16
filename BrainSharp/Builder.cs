@@ -55,7 +55,7 @@ namespace BrainSharp
         /// <returns>The generated code.</returns>
         public string GetCode()
         {
-            return instructions.GetCode();
+            return instructions.GenerateCode();
         }
 
         /// <summary>

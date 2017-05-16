@@ -2,25 +2,31 @@
 using System.Collections.Generic;
 using System.Text;
 using BrainSharp.Instructions;
+using BrainSharp.Properties;
 
 namespace BrainSharp
 {
     public class InstructionList
     {
-        private List<Instruction> instructions = new List<Instruction>();
+		private const int BASE_TABS = 3;
+		private const string CODE_TOKEN = "${code}";
+
+		private List<Instruction> instructions = new List<Instruction>();
 
         public void AddInstruction(Instruction i) => instructions.Add(i);
 
-        /// <summary>
-        /// Generate the code from the instruction list.
-        /// </summary>
-        /// <returns>The complete program code.</returns>
-        public string GetCode()
-        {
-            int tabs = baseTabs;
+		/// <summary>
+		/// Generate the code from the instruction list.
+		/// </summary>
+		/// <returns>The complete program code.</returns>
+		public string GenerateCode() => Resources.CodeTemplate.Replace(CODE_TOKEN, GetCodeFromInstructions());
+
+		private string GetCodeFromInstructions()
+		{
+            int tabs = BASE_TABS;
 
             // Build the code.
-            StringBuilder code = new StringBuilder(preCode);
+            StringBuilder code = new StringBuilder();
             foreach (Instruction i in instructions)
             {
                 string c = i.GetCode();
@@ -44,7 +50,6 @@ namespace BrainSharp
                         tabs += i.DeltaTabs;
                 }
             }
-            code.Append(postCode);
 
             return code.ToString();
         }
@@ -76,54 +81,5 @@ namespace BrainSharp
                 }
             }
         }
-
-        #region Code snippets
-        private const int baseTabs = 3;
-
-        private const string preCode =
-@"using System;
-
-namespace brainfuck
-{
-    public class Program
-    {
-        private static byte[] stack = new byte[256];
-        private static byte pointer = 0;
-        private static string input = String.Empty;
-        private static int inputPointer = 0;
-        
-        private static void Main(string[] args)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                input += args[i];
-                if (i < args.Length - 1)
-                    input += "" "";
-            }
-            
-            /* Start of generated code. */
-            
-";
-
-        // Code goes here.
-
-        private const string postCode =
-@"            
-            /* End of generated code. */
-            
-            Console.Read();
-        }
-        
-        private static byte ReadByte()
-        {
-            return (byte)(inputPointer < input.Length ? input[inputPointer++] : 0);
-        }
-        private static void PrintChar()
-        {
-            Console.Write((char)stack[pointer]);
-        }
-    }
-}";
-        #endregion
     }
 }
