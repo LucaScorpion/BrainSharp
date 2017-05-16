@@ -45,8 +45,6 @@ namespace BrainSharp
 
                 instructions.AddInstruction(next);
             }
-
-            instructions.MergeInstructions();
         }
 
         /// <summary>
@@ -55,7 +53,8 @@ namespace BrainSharp
         /// <returns>The generated code.</returns>
         public string GetCode()
         {
-            return instructions.GenerateCode();
+			instructions.MergeInstructions();
+			return instructions.GenerateCode();
         }
 
         /// <summary>
